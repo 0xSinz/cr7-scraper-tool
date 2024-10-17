@@ -17,47 +17,54 @@ chrome_service = Service("C:/Users/owner/Downloads/chromedriver-win64/chromedriv
 driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
 # Step 3: Open the webpage with the desired stats
-url = "https://sumersports.com/teams/offensive/"
+url = "https://sumersports.com/players/wide-receiver/"
 driver.get(url)
 
 # Step 4: Wait for the page to load
 time.sleep(5)  # Adjust this as necessary, or use WebDriverWait for a more dynamic wait
 
-# Step 5: Scrape the table with team stats (adjust selectors as necessary)
-team_data = []
+# Step 5: Scrape the table with wide receiver stats
+player_data = []
 table_rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
 
 for row in table_rows:
     try:
         # Scraping each column by their likely class or data attributes based on the image provided
-        team_name = row.find_element(By.CSS_SELECTOR, 'td:nth-child(1)').text
-        season = row.find_element(By.CSS_SELECTOR, 'td:nth-child(2)').text
-        epa_play = row.find_element(By.CSS_SELECTOR, 'td:nth-child(3)').text
-        success_percent = row.find_element(By.CSS_SELECTOR, 'td:nth-child(4)').text
-        epa_pass = row.find_element(By.CSS_SELECTOR, 'td:nth-child(5)').text
-        epa_rush = row.find_element(By.CSS_SELECTOR, 'td:nth-child(6)').text
-        pass_yards = row.find_element(By.CSS_SELECTOR, 'td:nth-child(7)').text
-        comp_percent = row.find_element(By.CSS_SELECTOR, 'td:nth-child(8)').text
-        pass_td = row.find_element(By.CSS_SELECTOR, 'td:nth-child(9)').text
-        pass_yds = row.find_element(By.CSS_SELECTOR, 'td:nth-child(10)').text
-        rush_yards = row.find_element(By.CSS_SELECTOR, 'td:nth-child(11)').text
-        rush_td = row.find_element(By.CSS_SELECTOR, 'td:nth-child(12)').text
-        proe = row.find_element(By.CSS_SELECTOR, 'td:nth-child(13)').text
+        player_name = row.find_element(By.CSS_SELECTOR, 'td:nth-child(1)').text
+        team = row.find_element(By.CSS_SELECTOR, 'td:nth-child(2)').text
+        season = row.find_element(By.CSS_SELECTOR, 'td:nth-child(3)').text
+        routes_run = row.find_element(By.CSS_SELECTOR, 'td:nth-child(4)').text
+        receptions = row.find_element(By.CSS_SELECTOR, 'td:nth-child(5)').text
+        rec_yards = row.find_element(By.CSS_SELECTOR, 'td:nth-child(6)').text
+        target_share = row.find_element(By.CSS_SELECTOR, 'td:nth-child(7)').text
+        touchdowns = row.find_element(By.CSS_SELECTOR, 'td:nth-child(8)').text
+        yac = row.find_element(By.CSS_SELECTOR, 'td:nth-child(9)').text
+        adot = row.find_element(By.CSS_SELECTOR, 'td:nth-child(10)').text
+        catch_percent = row.find_element(By.CSS_SELECTOR, 'td:nth-child(11)').text
+        total_epa = row.find_element(By.CSS_SELECTOR, 'td:nth-child(12)').text
+        targets_per_route_run = row.find_element(By.CSS_SELECTOR, 'td:nth-child(13)').text
+        expected_yprr = row.find_element(By.CSS_SELECTOR, 'td:nth-child(14)').text
+        yprr = row.find_element(By.CSS_SELECTOR, 'td:nth-child(15)').text
+        adjusted_yprr = row.find_element(By.CSS_SELECTOR, 'td:nth-child(16)').text
 
-        # Append the data to team_data list
-        team_data.append({
-            'Team Name': team_name,
+        # Append the data to player_data list
+        player_data.append({
+            'Player Name': player_name,
+            'Team': team,
             'Season': season,
-            'EPA/Play': epa_play,
-            'Success %': success_percent,
-            'EPA/Pass': epa_pass,
-            'EPA/Rush': epa_rush,
-            'Pass Yards': pass_yards,
-            'Completion %': comp_percent,
-            'Pass TD': pass_td,
-            'Rush Yards': rush_yards,
-            'Rush TD': rush_td,
-            'PROE': proe
+            'Routes Run': routes_run,
+            'Receptions': receptions,
+            'Receiving Yards': rec_yards,
+            'Target Share': target_share,
+            'Touchdowns': touchdowns,
+            'YAC': yac,
+            'ADoT': adot,
+            'Catch %': catch_percent,
+            'Total EPA': total_epa,
+            'Targets/Route Run': targets_per_route_run,
+            'Expected YPRR': expected_yprr,
+            'YPRR': yprr,
+            'Adjusted YPRR': adjusted_yprr
         })
     except Exception as e:
         print(f"Error processing row: {e}")
@@ -67,7 +74,7 @@ for row in table_rows:
 driver.quit()
 
 # Step 7: Save the data to a CSV file
-df = pd.DataFrame(team_data)
-df.to_csv('team_offensive_stats.csv', index=False)
+df = pd.DataFrame(player_data)
+df.to_csv('wide_receiver_stats.csv', index=False)
 
-print("Scraping complete. Data saved to team_offensive_stats.csv.")
+print("Scraping complete. Data saved to wide_receiver_stats.csv.")
