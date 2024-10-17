@@ -10,72 +10,64 @@ chrome_options = Options()
 chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument('--ignore-ssl-errors')
 
+# Path to your ChromeDriver
 chrome_service = Service("C:/Users/owner/Downloads/chromedriver-win64/chromedriver.exe")
+
+# Step 2: Set the Chrome browser as the driver
 driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
-# Step 2: Open the webpage with the desired stats
-url = "https://www.pro-football-reference.com/years/2024/receiving.htm"
+# Step 3: Open the webpage with the desired stats
+url = "https://sumersports.com/teams/offensive/"
 driver.get(url)
 
-# Step 3: Wait for the page to load
+# Step 4: Wait for the page to load
 time.sleep(5)  # Adjust this as necessary, or use WebDriverWait for a more dynamic wait
 
-# Step 4: Scrape the table with player stats (adjust selectors as necessary)
-player_data = []
+# Step 5: Scrape the table with team stats (adjust selectors as necessary)
+team_data = []
 table_rows = driver.find_elements(By.CSS_SELECTOR, 'table tbody tr')
 
 for row in table_rows:
     try:
-        # Scraping the columns using the data-stat attribute
-        player_name = row.find_element(By.CSS_SELECTOR, 'td[data-stat="player"]').text
-        team = row.find_element(By.CSS_SELECTOR, 'td[data-stat="team"]').text
-        age = row.find_element(By.CSS_SELECTOR, 'td[data-stat="age"]').text
-        position = row.find_element(By.CSS_SELECTOR, 'td[data-stat="pos"]').text
-        games = row.find_element(By.CSS_SELECTOR, 'td[data-stat="g"]').text
-        targets = row.find_element(By.CSS_SELECTOR, 'td[data-stat="targets"]').text
-        rec = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec"]').text
-        catch_percentage = row.find_element(By.CSS_SELECTOR, 'td[data-stat="catch_pct"]').text
-        yards = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_yds"]').text
-        yards_per_rec = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_yds_per_rec"]').text
-        touchdowns = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_td"]').text
-        first_downs = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_first_down"]').text
-        success_rate = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_success"]').text
-        longest = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_long"]').text
-        yards_per_tgt = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_yds_per_tgt"]').text
-        receptions_per_game = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_per_g"]').text
-        yards_per_game = row.find_element(By.CSS_SELECTOR, 'td[data-stat="rec_yds_per_g"]').text
-        fumbles = row.find_element(By.CSS_SELECTOR, 'td[data-stat="fumbles"]').text
+        # Scraping each column by their likely class or data attributes based on the image provided
+        team_name = row.find_element(By.CSS_SELECTOR, 'td:nth-child(1)').text
+        season = row.find_element(By.CSS_SELECTOR, 'td:nth-child(2)').text
+        epa_play = row.find_element(By.CSS_SELECTOR, 'td:nth-child(3)').text
+        success_percent = row.find_element(By.CSS_SELECTOR, 'td:nth-child(4)').text
+        epa_pass = row.find_element(By.CSS_SELECTOR, 'td:nth-child(5)').text
+        epa_rush = row.find_element(By.CSS_SELECTOR, 'td:nth-child(6)').text
+        pass_yards = row.find_element(By.CSS_SELECTOR, 'td:nth-child(7)').text
+        comp_percent = row.find_element(By.CSS_SELECTOR, 'td:nth-child(8)').text
+        pass_td = row.find_element(By.CSS_SELECTOR, 'td:nth-child(9)').text
+        pass_yds = row.find_element(By.CSS_SELECTOR, 'td:nth-child(10)').text
+        rush_yards = row.find_element(By.CSS_SELECTOR, 'td:nth-child(11)').text
+        rush_td = row.find_element(By.CSS_SELECTOR, 'td:nth-child(12)').text
+        proe = row.find_element(By.CSS_SELECTOR, 'td:nth-child(13)').text
 
-        # Append the data to player_data list
-        player_data.append({
-            'Player Name': player_name,
-            'Team': team,
-            'Age': age,
-            'Position': position,
-            'Games': games,
-            'Targets': targets,
-            'Receptions': rec,
-            'Catch %': catch_percentage,
-            'Yards': yards,
-            'Yards/Rec': yards_per_rec,
-            'Touchdowns': touchdowns,
-            'First Downs': first_downs,
-            'Success Rate': success_rate,
-            'Longest': longest,
-            'Yards/Tgt': yards_per_tgt,
-            'Receptions/Game': receptions_per_game,
-            'Yards/Game': yards_per_game,
-            'Fumbles': fumbles
+        # Append the data to team_data list
+        team_data.append({
+            'Team Name': team_name,
+            'Season': season,
+            'EPA/Play': epa_play,
+            'Success %': success_percent,
+            'EPA/Pass': epa_pass,
+            'EPA/Rush': epa_rush,
+            'Pass Yards': pass_yards,
+            'Completion %': comp_percent,
+            'Pass TD': pass_td,
+            'Rush Yards': rush_yards,
+            'Rush TD': rush_td,
+            'PROE': proe
         })
     except Exception as e:
         print(f"Error processing row: {e}")
         continue
 
-# Step 5: Close the browser
+# Step 6: Close the browser
 driver.quit()
 
-# Step 6: Save the data to a CSV file
-df = pd.DataFrame(player_data)
-df.to_csv('player_stats.csv', index=False)
+# Step 7: Save the data to a CSV file
+df = pd.DataFrame(team_data)
+df.to_csv('team_offensive_stats.csv', index=False)
 
-print("Scraping complete. Data saved to player_stats.csv.")
+print("Scraping complete. Data saved to team_offensive_stats.csv.")
